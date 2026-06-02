@@ -21,24 +21,24 @@ class Day15FullUpgradeWindow: ProPromptWindow {
         let resolved = reason?.resolved ?? .nonEngaged
         if resolved == .nonEngaged || UsageStats.usedProFeaturesSessionCount == 0 {
             return NSLocalizedString(
-                "AltTab Pro adds 4 features beyond the free switcher.",
+                "AltTab Free includes every feature without activation.",
                 comment: "")
         }
         let revertSentence = NSLocalizedString(
-            "Some Pro features have reverted to free defaults.", comment: "")
+            "Every feature remains enabled in this free fork.", comment: "")
         switch resolved {
         case .extraShortcut:
             return revertSentence + "\n" + NSLocalizedString(
-                "Extra shortcuts are a Pro feature.", comment: "")
+                "Extra shortcuts are included.", comment: "")
         case .search:
             return revertSentence + "\n" + NSLocalizedString(
-                "Search is a Pro feature.", comment: "")
+                "Search is included.", comment: "")
         case .appIconsStyle:
             return revertSentence + "\n" + NSLocalizedString(
-                "The App Icons style is a Pro feature.", comment: "")
+                "The App Icons style is included.", comment: "")
         case .titlesStyle:
             return revertSentence + "\n" + NSLocalizedString(
-                "The Titles style is a Pro feature.", comment: "")
+                "The Titles style is included.", comment: "")
         case .nonEngaged:
             return ""
         }
@@ -56,7 +56,7 @@ class Day15FullUpgradeWindow: ProPromptWindow {
         let hero = UsageStatHeroView(supportingLine: Self.supportingLine(for: nil))
         self.hero = hero
 
-        let purchaseButton = NSButton(title: NSLocalizedString("Get Pro", comment: ""), target: nil, action: nil)
+        let purchaseButton = NSButton(title: NSLocalizedString("Source code", comment: ""), target: nil, action: nil)
         purchaseButton.translatesAutoresizingMaskIntoConstraints = false
         purchaseButton.bezelStyle = .rounded
         if #available(macOS 11.0, *) { purchaseButton.controlSize = .large }

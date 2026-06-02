@@ -1,8 +1,7 @@
 import Foundation
 
-/// Talks to our own licensing backend at `alt-tab.app/v1/license/*`. Provider-agnostic:
-/// the backend's active payment provider is a deployment-time choice that this client
-/// never sees. Same wire format regardless of who's actually handling payments.
+/// Legacy licensing client retained for source compatibility with upstream code.
+/// The free fork's `LicenseManager` does not call this client.
 struct RemoteLicenseClient: LicenseAPI {
     let baseUrl: String
     let keychain: Keychain

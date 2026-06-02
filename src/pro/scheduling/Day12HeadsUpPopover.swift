@@ -13,7 +13,7 @@ class Day12HeadsUpPopover {
         let container = NSView()
         container.translatesAutoresizingMaskIntoConstraints = false
 
-        let title = NSTextField(labelWithString: NSLocalizedString("Your Pro trial ends in 2 days", comment: ""))
+        let title = NSTextField(labelWithString: NSLocalizedString("All features are included", comment: ""))
         title.font = .systemFont(ofSize: 13, weight: .semibold)
         title.translatesAutoresizingMaskIntoConstraints = false
         title.isSelectable = false
@@ -28,7 +28,7 @@ class Day12HeadsUpPopover {
         let notNow = NotAdvisedButton(NSLocalizedString("Not now", comment: ""))
         notNow.onAction = { _ in popover.performClose(nil) }
 
-        let getPro = NSButton(title: NSLocalizedString("Get Pro", comment: ""), target: nil, action: nil)
+        let getPro = NSButton(title: NSLocalizedString("Source code", comment: ""), target: nil, action: nil)
         getPro.translatesAutoresizingMaskIntoConstraints = false
         getPro.bezelStyle = .rounded
         getPro.controlSize = .small

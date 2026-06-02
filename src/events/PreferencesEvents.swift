@@ -81,6 +81,12 @@ class PreferencesEvents {
 
     private static func applyUpdatePolicyPreference() {
         GeneralTab.policyLock = true
+        guard Endpoints.appcastUrl != nil else {
+            App.updaterController?.updater.automaticallyDownloadsUpdates = false
+            App.updaterController?.updater.automaticallyChecksForUpdates = false
+            GeneralTab.policyLock = false
+            return
+        }
         let policy = Preferences.updatePolicy
         App.updaterController?.updater.automaticallyDownloadsUpdates = policy == .autoInstall
         App.updaterController?.updater.automaticallyChecksForUpdates = policy == .autoInstall || policy == .autoCheck

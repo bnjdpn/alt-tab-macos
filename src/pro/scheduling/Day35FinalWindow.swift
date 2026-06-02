@@ -21,13 +21,13 @@ class Day35FinalWindow: ProPromptWindow {
         container.translatesAutoresizingMaskIntoConstraints = false
 
         let header = ProPromptHeader(
-            title: NSLocalizedString("Still interested in Pro?", comment: ""),
+            title: NSLocalizedString("AltTab Free is open source", comment: ""),
             size: .compact)
 
         let hero = UsageStatHeroView()
         self.hero = hero
 
-        let purchaseButton = NSButton(title: NSLocalizedString("Get Pro", comment: ""), target: nil, action: nil)
+        let purchaseButton = NSButton(title: NSLocalizedString("Source code", comment: ""), target: nil, action: nil)
         purchaseButton.translatesAutoresizingMaskIntoConstraints = false
         purchaseButton.bezelStyle = .rounded
         if #available(macOS 11.0, *) { purchaseButton.controlSize = .large }

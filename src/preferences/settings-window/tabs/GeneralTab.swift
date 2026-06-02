@@ -23,6 +23,11 @@ class GeneralTab {
         updatesPolicyDropdown = LabelAndControl.makeDropdown("updatePolicy", UpdatePolicyPreference.allCases)
         let checkForUpdates = NSButton(title: NSLocalizedString("Check for updates now…", comment: ""), target: nil, action: nil)
         checkForUpdates.onAction = { control in checkForUpdatesNow(control) }
+        if Endpoints.appcastUrl == nil {
+            updatesPolicyDropdown?.isEnabled = false
+            checkForUpdates.isEnabled = false
+            checkForUpdates.toolTip = NSLocalizedString("Updates are not configured for this fork yet.", comment: "")
+        }
         crashPolicyDropdown = LabelAndControl.makeDropdown("crashPolicy", CrashPolicyPreference.allCases)
         let crashPolicy = TableGroupView.Row(leftTitle: NSLocalizedString("Crash reports policy", comment: ""),
             rightViews: [crashPolicyDropdown!])
@@ -108,6 +113,18 @@ class GeneralTab {
     }
 
     @objc static func checkForUpdatesNow(_ sender: Any?) {
+        guard Endpoints.appcastUrl != nil else {
+            let alert = NSAlert()
+            alert.alertStyle = .informational
+            alert.messageText = NSLocalizedString("Updates are not configured for this fork yet.", comment: "")
+            alert.informativeText = NSLocalizedString("Check the source repository for releases.", comment: "")
+            alert.addButton(withTitle: NSLocalizedString("Open repository", comment: ""))
+            alert.addButton(withTitle: NSLocalizedString("OK", comment: ""))
+            if alert.runModal() == .alertFirstButtonReturn {
+                NSWorkspace.shared.open(URL(string: App.repository)!)
+            }
+            return
+        }
         // The updater is lazy-started 30s after launch; if the user presses this button before
         // then, defensively start it first (idempotent — second call is a no-op).
         App.updaterController?.startUpdater()

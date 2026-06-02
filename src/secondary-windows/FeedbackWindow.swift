@@ -383,33 +383,16 @@ class FeedbackWindow: NSWindow {
         let cancelButton = alert.addButton(withTitle: NSLocalizedString("Cancel", comment: ""))
         cancelButton.keyEquivalent = "\u{1b}" // Escape
         if alert.runModal() != .alertFirstButtonReturn { return }
-        beginSubmitting()
-        // Capture the kind that owns this submission. If the user navigates to the other kind
-        // form while the POST is in flight, completion still clears the right draft slot.
         let submittedKind = kind
-        URLSession.shared.dataTask(with: prepareRequest()) { [weak self] data, response, error in
-            let status = (response as? HTTPURLResponse)?.statusCode ?? 0
-            let succeeded = status == 201 && error == nil
-            if !succeeded {
-                Logger.error { "feedback POST failed. status:\(status) response:\(response) error:\(error) data:\(data.flatMap { String(data: $0, encoding: .utf8) })" }
-            }
-            DispatchQueue.main.async {
-                guard let self = self else { return }
-                self.endSubmitting()
-                if succeeded {
-                    self.drafts[submittedKind] = nil
-                    // If the user is still on the form they submitted, also clear the on-screen
-                    // textareas so the visible state matches the now-empty draft.
-                    if self.formIsVisible && self.kind == submittedKind {
-                        self.issueTitle.stringValue = ""
-                        self.body.stringValue = ""
-                    }
-                    self.close()
-                } else {
-                    self.showSubmitFailureAlert()
-                }
-            }
-        }.resume()
+        guard let url = prepareIssueUrl() else {
+            showSubmitFailureAlert()
+            return
+        }
+        NSWorkspace.shared.open(url)
+        drafts[submittedKind] = nil
+        issueTitle.stringValue = ""
+        body.stringValue = ""
+        close()
     }
 
     private func beginSubmitting() {
@@ -437,22 +420,30 @@ class FeedbackWindow: NSWindow {
         alert.runModal()
     }
 
-    /// The backend owns the final GitHub issue presentation — we just hand it the raw
-    /// pieces. Splitting `body` from `debugProfile` means the markdown layout (quoting,
-    /// `<details>` wrapping, disclaimer) can change server-side without forcing every
-    /// installed AltTab to update.
-    private func prepareRequest() -> URLRequest {
-        var request = URLRequest(url: URL(string: Endpoints.feedbackUrl)!)
-        request.httpMethod = "POST"
-        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.addValue("application/json", forHTTPHeaderField: "Accept")
-        request.httpBody = try! JSONSerialization.data(withJSONObject: [
-            "title": issueTitle.stringValue,
-            "body": body.stringValue,
-            "kind": kind.apiValue,
-            "debugProfile": DebugProfile.make(),
-        ])
-        return request
+    private func prepareIssueUrl() -> URL? {
+        var components = URLComponents(string: Endpoints.feedbackUrl)
+        components?.queryItems = [
+            URLQueryItem(name: "title", value: issueTitle.stringValue),
+            URLQueryItem(name: "body", value: githubIssueBody()),
+        ]
+        return components?.url
+    }
+
+    private func githubIssueBody() -> String {
+        """
+        \(body.stringValue)
+
+        ---
+
+        <details>
+        <summary>Debug profile</summary>
+
+        ```text
+        \(DebugProfile.make())
+        ```
+
+        </details>
+        """
     }
 
     override func close() {

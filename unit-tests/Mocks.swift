@@ -40,7 +40,8 @@ class App {
         var tilesPanel = TilesPanelMock()
     }
     static let app = AppMock()
-    static let bundleIdentifier = "com.lwouis.alt-tab-macos"
+    static let bundleIdentifier = "com.benjamindupin.alt-tab-free"
+    static let repository = "https://github.com/benjamindupin/alt-tab-pro-but-free"
 }
 
 class TilesPanel {

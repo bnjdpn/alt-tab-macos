@@ -66,8 +66,7 @@ enum ProGradient {
     }
 
     /// Render any string as a gradient `NSImage` wrapped in an `NSTextAttachment`, ready to be
-    /// concatenated into an `NSAttributedString`. Generalises `makeProTextAttachment` for callers
-    /// that need the full gradient on a longer phrase (e.g. menu rows showing "Get Pro").
+    /// concatenated into an `NSAttributedString`.
     static func makeGradientTextAttachment(_ string: String, font: NSFont, baselineOffset: CGFloat = 0) -> NSAttributedString {
         let image = makeGradientTextImage(string, font: font)
         let text = NSAttributedString(string: string, attributes: [.font: font])
@@ -251,64 +250,15 @@ class ProBadgeView: NSView {
     /// Only valid for the LAST segment — the badge anchors to the control's trailing edge.
     @discardableResult
     static func attach(to segmentedControl: NSSegmentedControl, segmentIndex: Int, label: String, symbol: Symbols) -> SegmentOverlay {
-        let selected = segmentedControl.selectedSegment == segmentIndex
-        segmentedControl.setLabel("", forSegment: segmentIndex)
-        segmentedControl.setImage(nil, forSegment: segmentIndex)
-        if #available(macOS 10.13, *) {
-            segmentedControl.setToolTip(label, forSegment: segmentIndex)
-        }
-        let segmentLeading = (0..<segmentIndex).reduce(CGFloat(0)) { $0 + segmentedControl.width(forSegment: $1) }
-        let colorProvider = segmentColorProvider(for: segmentedControl, segmentIndex: segmentIndex)
-        let iconView = DynamicColorImageView()
-        iconView.colorProvider = colorProvider
-        iconView.translatesAutoresizingMaskIntoConstraints = false
-        // Rendered from our bundled font subset; `isTemplate = true` (set by NSImage.fromSymbol)
-        // makes AppKit apply `contentTintColor`. Mirrors the sibling segments' native rendering.
-        iconView.image = NSImage.fromSymbol(symbol, pointSize: 13)
-        if #available(macOS 10.14, *) { iconView.contentTintColor = colorProvider() }
-        iconView.setContentHuggingPriority(.required, for: .horizontal)
-        iconView.setContentCompressionResistancePriority(.required, for: .horizontal)
-        let textLabel = DynamicColorTextField(labelWithString: label)
-        textLabel.colorProvider = colorProvider
-        textLabel.translatesAutoresizingMaskIntoConstraints = false
-        textLabel.font = segmentedControl.font
-        textLabel.textColor = colorProvider()
-        textLabel.lineBreakMode = .byTruncatingTail
-        textLabel.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
         let badge = ProBadgeView()
-        badge.setSelected(selected)
+        let iconView = DynamicColorImageView()
+        let textLabel = DynamicColorTextField(labelWithString: "")
+        badge.isHidden = true
+        iconView.isHidden = true
+        textLabel.isHidden = true
         segmentedControl.addSubview(iconView)
         segmentedControl.addSubview(textLabel)
         segmentedControl.addSubview(badge)
-        let segmentWidth = segmentedControl.width(forSegment: segmentIndex)
-        let iconWidth = iconView.fittingSize.width
-        let textWidth = textLabel.fittingSize.width
-        let badgeWidth = badge.fittingSize.width
-        let contentWidth = iconWidth + 2 + textWidth
-        let availableWidth = segmentWidth - badgeWidth - 4 - 4 - 4 // leading pad, gap, trailing pad
-        // Position content as close to centered as possible without overlapping the Pro badge:
-        // 1) Full-segment center if the centered content clears the badge.
-        // 2) Otherwise shift left only as much as needed to keep the content's right edge clear.
-        // 3) If even the leftmost position overflows, stay at the left pad and let the trailing
-        //    constraint truncate.
-        let maxContentRightEdge = segmentWidth - badgeWidth - 4
-        let centerOffset = (segmentWidth - contentWidth) / 2
-        let leadingOffset: CGFloat
-        if centerOffset + contentWidth <= maxContentRightEdge {
-            leadingOffset = segmentLeading + centerOffset
-        } else {
-            leadingOffset = segmentLeading + max(maxContentRightEdge - contentWidth, 8)
-        }
-        NSLayoutConstraint.activate([
-            iconView.leadingAnchor.constraint(equalTo: segmentedControl.leadingAnchor, constant: leadingOffset),
-            iconView.centerYAnchor.constraint(equalTo: segmentedControl.centerYAnchor),
-            textLabel.leadingAnchor.constraint(equalTo: iconView.trailingAnchor, constant: 2),
-            textLabel.centerYAnchor.constraint(equalTo: segmentedControl.centerYAnchor),
-            textLabel.trailingAnchor.constraint(lessThanOrEqualTo: badge.leadingAnchor),
-            textLabel.widthAnchor.constraint(lessThanOrEqualToConstant: availableWidth - iconWidth - 2),
-            badge.centerYAnchor.constraint(equalTo: segmentedControl.centerYAnchor),
-            badge.trailingAnchor.constraint(equalTo: segmentedControl.trailingAnchor, constant: -segmentTrailingPadding),
-        ])
         return SegmentOverlay(badge: badge, icon: iconView, label: textLabel)
     }
 
@@ -316,9 +266,9 @@ class ProBadgeView: NSView {
     /// badge flips between gradient (unselected) and white-overlay (selected + key); the icon
     /// and label redraw so their `colorProvider`-driven `viewWillDraw` picks up the new state.
     static func refreshSelection(in segmentedControl: NSSegmentedControl, proIndex: Int, overlay: SegmentOverlay) {
-        overlay.badge.setSelected(segmentedControl.selectedSegment == proIndex)
-        overlay.icon.needsDisplay = true
-        overlay.label.needsDisplay = true
+        overlay.badge.isHidden = true
+        overlay.icon.isHidden = true
+        overlay.label.isHidden = true
     }
 
     private let label = NSTextField(labelWithString: NSLocalizedString("Pro", comment: ""))
@@ -334,6 +284,7 @@ class ProBadgeView: NSView {
     override init(frame frameRect: NSRect) {
         super.init(frame: frameRect)
         translatesAutoresizingMaskIntoConstraints = false
+        isHidden = true
         wantsLayer = true
         layer?.cornerRadius = 4
         label.font = NSFont.systemFont(ofSize: 9, weight: .semibold)

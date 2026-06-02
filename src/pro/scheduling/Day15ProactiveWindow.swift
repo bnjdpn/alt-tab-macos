@@ -20,9 +20,9 @@ class Day15ProactiveWindow: ProPromptWindow {
     private static func supportingLine() -> String {
         UsageStats.usedProFeaturesSessionCount == 0
             ? NSLocalizedString(
-                "AltTab Pro adds 4 features beyond the free switcher.", comment: "")
+                "AltTab Free includes every feature without activation.", comment: "")
             : NSLocalizedString(
-                "Some Pro features have reverted to free defaults.", comment: "")
+                "Every feature remains enabled in this free fork.", comment: "")
     }
 
     convenience init() {
@@ -32,13 +32,13 @@ class Day15ProactiveWindow: ProPromptWindow {
         container.translatesAutoresizingMaskIntoConstraints = false
 
         let header = ProPromptHeader(
-            title: NSLocalizedString("Your 14-day Pro trial just ended", comment: ""),
+            title: NSLocalizedString("AltTab Free is fully unlocked", comment: ""),
             size: .compact)
 
         let hero = UsageStatHeroView(supportingLine: Self.supportingLine())
         self.hero = hero
 
-        let purchaseButton = NSButton(title: NSLocalizedString("Get Pro", comment: ""), target: nil, action: nil)
+        let purchaseButton = NSButton(title: NSLocalizedString("Source code", comment: ""), target: nil, action: nil)
         purchaseButton.translatesAutoresizingMaskIntoConstraints = false
         purchaseButton.bezelStyle = .rounded
         if #available(macOS 11.0, *) { purchaseButton.controlSize = .large }

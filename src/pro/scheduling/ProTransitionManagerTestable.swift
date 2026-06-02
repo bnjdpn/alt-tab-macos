@@ -106,20 +106,15 @@ struct ProTransitionManagerTestable {
     }
 
     /// What should happen on a fresh switcher open (not a cycle of an existing session)?
-    /// Two distinct triggers, both deferred until `hideUi()` so the popover/window appears after dismissal:
-    /// 1. Day 4 mid-trial Pro tour — once-ever, only on Day 4 exactly.
-    /// 2. Post-expiration switcher trigger — once-ever, fires for every user (engaged or not). The
-    ///    `HardGateReason` carries the remembered Pro selections when present so [C] can render a
-    ///    tailored header; otherwise it resolves to `.nonEngaged`.
+    /// Legacy transition triggers retained for upstream test compatibility.
     static func evaluateSwitcherOpen(_ s: State) -> SwitcherOpenAction {
         if s.isPro { return .noop }
         if s.isTrialActive {
             if s.daysSinceTrialStart == 3 && !s.hasSeenDay4Tour { return .showDay4Tour }
             return .noop
         }
-        // Trial expired: trigger free-pass + [C] on first summon, regardless of which Pro features were
-        // configured. For users with no remembered* values, the reason resolves to `.nonEngaged` and the
-        // free-pass session is a harmless no-op (read() falls back to stored Free defaults).
+        // Legacy post-expiration path. The free fork never reaches it because LicenseManager is
+        // permanently unlocked.
         if !s.hasTriggeredPostExpirationSwitcher && !s.freePassUsed {
             return .triggerFreePass
         }

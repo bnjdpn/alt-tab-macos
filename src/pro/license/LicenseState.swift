@@ -14,7 +14,7 @@ enum LicenseState: Equatable {
     var debugProfileLabel: String {
         switch self {
         case .trial: return "Trial"
-        case .pro: return "Pro"
+        case .pro: return "Free"
         case .proExpired, .trialExpired: return "Free"
         }
     }

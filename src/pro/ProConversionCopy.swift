@@ -11,15 +11,15 @@ enum ProConversionCopy {
     static func day12Subtitle() -> String {
         let used = UsageStats.usedProFeatureNames()
         if used.isEmpty {
-            return NSLocalizedString("On Day 15, Pro features revert to the free version.", comment: "")
+            return NSLocalizedString("There is no trial period in this fork.", comment: "")
         }
         if used.count <= 2 {
             return String(format: NSLocalizedString(
-                "You've been using %@.\nThese will switch back to defaults on Day 15.",
+                "You've been using %@.\nThese features remain available.",
                 comment: ""), used.joined(separator: " and "))
         }
         return String(format: NSLocalizedString(
-            "You've been using %d Pro features.\nThey'll switch back to defaults on Day 15.",
+            "You've been using %d advanced features.\nThey remain available.",
             comment: ""), used.count)
     }
 
@@ -29,7 +29,7 @@ enum ProConversionCopy {
 
         if triggers > 0 && proCount > 0 {
             return String(format: NSLocalizedString(
-                "You've used AltTab %@ times — %@ of those used Pro features.",
+                "You've used AltTab %@ times; %@ of those used advanced features.",
                 comment: ""),
                 UsageStats.formatCount(triggers),
                 UsageStats.formatCount(proCount))
@@ -40,6 +40,6 @@ enum ProConversionCopy {
                 comment: ""),
                 UsageStats.formatCount(triggers))
         }
-        return NSLocalizedString("Pro is still available whenever you're ready.", comment: "")
+        return NSLocalizedString("Every feature is available in this free fork.", comment: "")
     }
 }

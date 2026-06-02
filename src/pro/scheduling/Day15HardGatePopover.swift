@@ -15,7 +15,7 @@ class Day15HardGatePopover {
         title.font = .systemFont(ofSize: 13, weight: .semibold)
         title.translatesAutoresizingMaskIntoConstraints = false
 
-        let purchaseButton = NSButton(title: NSLocalizedString("Get Pro", comment: ""), target: nil, action: nil)
+        let purchaseButton = NSButton(title: NSLocalizedString("Source code", comment: ""), target: nil, action: nil)
         purchaseButton.translatesAutoresizingMaskIntoConstraints = false
         purchaseButton.controlSize = .small
         purchaseButton.bezelStyle = .rounded

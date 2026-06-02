@@ -18,12 +18,12 @@ class Day1WelcomeLetterWindow: ProPromptWindow {
 
         let titleFormat = isFresh
             ? NSLocalizedString("Welcome to %@", comment: "")
-            : NSLocalizedString("%@ now has a Pro tier", comment: "")
+            : NSLocalizedString("%@ is fully unlocked", comment: "")
         let header = ProPromptHeader(title: String(format: titleFormat, App.name), size: .large)
 
         let messageText = isFresh
-            ? NSLocalizedString("AltTab is a free, open-source window switcher for macOS. Pro features are available with a 14-day free trial.", comment: "")
-            : NSLocalizedString("You have 14 days to try all Pro features. After that, Pro features will step back and the core window switcher will keep working exactly as before.\n\nAltTab stays free and open-source. Pro is an optional one-time purchase that funds continued development.", comment: "")
+            ? NSLocalizedString("AltTab Free is a free, open-source window switcher for macOS with every feature included.", comment: "")
+            : NSLocalizedString("This fork has no paid tier, no trial, and no license activation. Every feature remains available for everyone.", comment: "")
         let message = NSTextField(wrappingLabelWithString: messageText)
         message.font = .systemFont(ofSize: 14)
         message.isSelectable = false
@@ -33,7 +33,7 @@ class Day1WelcomeLetterWindow: ProPromptWindow {
         let comparisonView = makeComparisonView()
         comparisonView.translatesAutoresizingMaskIntoConstraints = false
 
-        let button = NSButton(title: NSLocalizedString("Start my 14-day trial", comment: ""), target: nil, action: nil)
+        let button = NSButton(title: NSLocalizedString("Continue", comment: ""), target: nil, action: nil)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.bezelStyle = .rounded
         button.keyEquivalent = "\r"
@@ -88,7 +88,7 @@ class Day1WelcomeLetterWindow: ProPromptWindow {
 
         let headerFeature = makeHeaderCell(NSLocalizedString("Feature", comment: ""), .labelColor, alignment: .left)
         let headerFree = makeHeaderCell(NSLocalizedString("Free", comment: ""), .secondaryLabelColor, alignment: .center)
-        let headerPro = makeGradientProHeaderCell(alignment: .center)
+        let headerPro = makeHeaderCell(NSLocalizedString("Included", comment: ""), .secondaryLabelColor, alignment: .center)
         stack.addArrangedSubview(makeRow(featureView: headerFeature, freeView: headerFree, proView: headerPro))
 
         for (text, free, pro) in data {
@@ -96,7 +96,7 @@ class Day1WelcomeLetterWindow: ProPromptWindow {
             label.font = .systemFont(ofSize: 12)
             label.isSelectable = false
             label.preferredMaxLayoutWidth = 368
-            stack.addArrangedSubview(makeRow(featureView: label, freeView: makeMarkCell(free, isPro: false), proView: makeMarkCell(pro, isPro: true)))
+            stack.addArrangedSubview(makeRow(featureView: label, freeView: makeMarkCell(free, isPro: false), proView: makeMarkCell(pro, isPro: false)))
         }
         return stack
     }
@@ -160,4 +160,3 @@ class Day1WelcomeLetterWindow: ProPromptWindow {
         return label
     }
 }
-

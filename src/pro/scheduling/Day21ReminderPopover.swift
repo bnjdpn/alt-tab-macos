@@ -11,7 +11,7 @@ class Day21ReminderPopover {
         let container = NSView()
         container.translatesAutoresizingMaskIntoConstraints = false
 
-        let title = NSTextField(labelWithString: NSLocalizedString("AltTab Pro is still available", comment: ""))
+        let title = NSTextField(labelWithString: NSLocalizedString("AltTab Free is fully unlocked", comment: ""))
         title.font = .systemFont(ofSize: 13, weight: .semibold)
         title.translatesAutoresizingMaskIntoConstraints = false
 
@@ -21,7 +21,7 @@ class Day21ReminderPopover {
         body.translatesAutoresizingMaskIntoConstraints = false
         body.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
 
-        let purchaseButton = NSButton(title: NSLocalizedString("Get Pro", comment: ""), target: nil, action: nil)
+        let purchaseButton = NSButton(title: NSLocalizedString("Source code", comment: ""), target: nil, action: nil)
         purchaseButton.translatesAutoresizingMaskIntoConstraints = false
         purchaseButton.controlSize = .small
         purchaseButton.bezelStyle = .rounded

@@ -2,10 +2,9 @@
 """
 Regenerate docs/readme/main.svg, the consolidated SVG that drives README.md.
 
-The README is a single dark, on-brand image (hero + stats + CTAs + screenshot)
-that hands GitHub visitors off to https://alt-tab.app/. To stay seamless across
-GitHub light & dark themes, every visible element is baked into one SVG —
-including the hero screenshot, embedded as a base64 JPG.
+The README can be rendered as a single image (hero + stats + CTA + screenshot).
+This fork uses a text README by default; keep this helper only if you decide to
+restore an image-based README later.
 
 What this script does:
   1. Reads a source screenshot (default: docs/readme/screenshot-source.webp).
@@ -58,7 +57,7 @@ def build_svg(screenshot_b64: str) -> str:
     """
     Build the SVG. Layout (y coordinates inside a 900x1040 viewBox):
        50 - 194 : icon (144x144, vertically centered with the title+tagline stack)
-      120       : "AltTab Pro" title baseline
+      120       : title baseline
       158       : tagline baseline
       220 - 360 : stats container (deco 140x140 with number + label inside)
       365 - 421 : CTA #1
