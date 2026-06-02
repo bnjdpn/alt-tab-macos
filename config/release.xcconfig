@@ -2,7 +2,7 @@
 
 #include "base.xcconfig"
 
-CODE_SIGN_IDENTITY = Developer ID Application: Louis Pontoise (QXD7GW8FHY)
+CODE_SIGN_IDENTITY = -
 CODE_SIGN_INJECT_BASE_ENTITLEMENTS = NO // for notarization
 OTHER_CODE_SIGN_FLAGS = --timestamp --deep --options runtime // for notarization
 SWIFT_COMPILATION_MODE = wholemodule
@@ -17,5 +17,6 @@ COPY_PHASE_STRIP = YES
 STRIP_INSTALLED_PRODUCT = YES
 STRIP_STYLE = all
 
-// Per-developer overrides (CODE_SIGN_IDENTITY, APPCENTER_SECRET, DOMAIN, API_DOMAIN, …).
+// Release distribution must override CODE_SIGN_IDENTITY with this fork maintainer's own Developer ID.
+// Per-developer overrides (CODE_SIGN_IDENTITY, APPCENTER_SECRET, DOMAIN, API_DOMAIN, SPARKLE_PUBLIC_ED_KEY, …).
 #include? "local.xcconfig"

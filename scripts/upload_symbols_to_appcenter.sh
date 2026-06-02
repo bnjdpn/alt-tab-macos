@@ -2,8 +2,12 @@
 
 set -exu
 
-ownerName="alt-tab-macos"
-appName="alt-tab-macos"
+ownerName="${APPCENTER_OWNER:-}"
+appName="${APPCENTER_APP:-}"
+if [ -z "$ownerName" ] || [ -z "$appName" ]; then
+  echo "AppCenter symbol upload is disabled for this independent fork."
+  exit 0
+fi
 url="https://api.appcenter.ms/v0.1/apps/$ownerName/$appName"
 version="$(cat "$VERSION_FILE")"
 

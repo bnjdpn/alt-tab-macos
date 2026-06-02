@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 
-set -exu
+set -eu
 
-gh api repos/lwouis/alt-tab-website/dispatches -f event_type=update-website
+echo "Website deployment is disabled for this independent fork."

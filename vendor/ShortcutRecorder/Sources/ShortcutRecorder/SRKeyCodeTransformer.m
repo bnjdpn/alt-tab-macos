@@ -342,7 +342,7 @@ typedef TISInputSourceRef (*_SRKeyCodeTransformerCacheInputSourceCreate)(void);
                                      explicitModifierFlags:0
                                                 usingCache:YES];
 
-            // fix: https://github.com/lwouis/alt-tab-macos/issues/1190
+            // Keep the first translation when a keyboard layout produces duplicates.
             if (newTranslationToKeyCode[translation])
                 continue;
 

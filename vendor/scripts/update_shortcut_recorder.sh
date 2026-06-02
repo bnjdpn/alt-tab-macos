@@ -6,7 +6,7 @@ set -euo pipefail
 
 UPSTREAM_COMMIT="52c6273d233f7794e4fd5d22f50d2de0e4e41b19"
 UPSTREAM_BRANCH="alt-tab-current"
-GIT_URL="https://github.com/lwouis/ShortcutRecorder.git"
+GIT_URL="https://github.com/Kentzo/ShortcutRecorder.git"
 DEST="vendor/ShortcutRecorder"
 
 require_update_flag "${1:-}" "$0" "refreshes $DEST to ${UPSTREAM_COMMIT:0:8}"

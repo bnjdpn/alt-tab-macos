@@ -1,4 +1,4 @@
-# Escape key delivery & macOS 26 Game Overlay (issue [#5585](https://github.com/lwouis/alt-tab-macos/issues/5585))
+# Escape key delivery & macOS 26 Game Overlay (issue [#5585](https://github.com/benjamindupin/alt-tab-pro-but-free/issues/5585))
 
 ## Problem
 

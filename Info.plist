@@ -18,7 +18,7 @@
 	<key>CFBundleIconFile</key>
 	<string>app.icns</string>
 	<key>NSHumanReadableCopyright</key>
-	<string>GPL-3.0 licence</string>
+	<string>GPL-3.0; no warranty</string>
 	<key>LSApplicationCategoryType</key>
 	<string>public.app-category.utilities</string>
 
@@ -59,7 +59,7 @@
 
 	<!-- ===== Sparkle (auto-update framework — reads these directly from the bundle) ===== -->
 	<key>SUPublicEDKey</key>
-	<string>2e9SQOBoaKElchSa/4QDli/nvYkyuDNfynfzBF6vJK4=</string>
+	<string>$(SPARKLE_PUBLIC_ED_KEY)</string>
 	<key>SUEnableAutomaticChecks</key>
 	<string>false</string>
 	<key>SUScheduledCheckInterval</key>

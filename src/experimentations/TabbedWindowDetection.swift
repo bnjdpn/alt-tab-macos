@@ -4,7 +4,7 @@
 // macOS provides no public API to detect whether a window is an inactive OS tab.
 // This file documents all approaches tested and their results.
 //
-// Test setup: Finder with 2 tabbed windows ("lwouis" inactive tab, "git" active tab)
+// Test setup: Finder with 2 tabbed windows ("notes" inactive tab, "git" active tab)
 // and 1 non-tabbed window ("Movies").
 //
 // MARK: - Approaches that DON'T work
@@ -36,7 +36,7 @@
 //    Compared binary tag patterns across window states:
 //      Active tab (git):    1100000000000000000000000100000000010010000010000000000001
 //      Non-tabbed (Movies): 1100000000000000000000000100000000010010000010000000000001
-//      Inactive tab (lwouis): 1100000000000000000000000100000000010010000000000000000001
+//      Inactive tab (notes): 1100000000000000000000000100000000010010000000000000000001
 //    The inactive tab differs in a few bits, but the same pattern appears for hidden
 //    and other-space windows. Not a reliable tab-specific signal.
 //
@@ -81,9 +81,9 @@
 //    - kAXValueAttribute: 1 for active tab, 0 for inactive tab
 //    - _AXUIElementGetWindow: returns the parent window's WID (not individual tab WIDs)
 //
-// Example output for Finder with tabs "lwouis" and "git" (git is active):
+// Example output for Finder with tabs "notes" and "git" (git is active):
 //   AXTabGroup has 3 children:
-//     [0] role=AXRadioButton subrole=AXTabButton title='lwouis' value=0
+//     [0] role=AXRadioButton subrole=AXTabButton title='notes'  value=0
 //     [1] role=AXRadioButton subrole=AXTabButton title='git'    value=1
 //     [2] role=AXButton      subrole=nil          title=''      value=nil  ← "+" button
 //
