@@ -32,4 +32,8 @@ class AppearanceTestable {
         // Make sure the values are clamped between some reasonable bounds
         return (max(0.09, minRatio), min(0.30, maxRatio))
     }
+
+    static func thumbnailTileHeight(_ thumbnailHeight: CGFloat, _ headerHeight: CGFloat, _ edgeInsets: CGFloat, _ contentSpacing: CGFloat, _ maximumHeight: CGFloat) -> CGFloat {
+        min(maximumHeight, thumbnailHeight + headerHeight + edgeInsets * 2 + contentSpacing).rounded()
+    }
 }

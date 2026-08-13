@@ -4,7 +4,7 @@
 
 ## Summary
 
-Two pure sizing functions in `AppearanceTestable` decide how big the switcher's thumbnails are on a
+Three pure sizing functions in `AppearanceTestable` decide how big the switcher's thumbnails are on a
 given display, so the UI feels right from an 11" laptop to a 60" TV. The suite pins their output against
 a table of **21 real device models** (laptops, monitors, ultrawides, TVs) with known pixel + physical
 dimensions, so a tweak to the formula can't silently regress any class of screen.
@@ -13,6 +13,8 @@ dimensions, so a tweak to the formula can't silently regress any class of screen
   fraction on bigger/wider screens, separate expectations for horizontal vs vertical use).
 - `goodValuesForThumbnailsWidthMinMax(ratio, rowCount)` → the (min, max) thumbnail width for a given
   screen aspect ratio and row count (3, 4, or 5 rows).
+- `thumbnailTileHeight(thumbnailHeight, headerHeight, edgeInsets, contentSpacing, maximumHeight)` → the
+  rendered tile height, capped by the configured row capacity.
 
 ## Behavior & edge cases
 
@@ -21,6 +23,8 @@ dimensions, so a tweak to the formula can't silently regress any class of screen
   tolerance, naming the failing model.
 - Bigger physical screens get a smaller comfortable fraction (a 60" TV shouldn't show a half-screen
   switcher); ultrawides get distinct horizontal vs vertical fractions.
+- Thumbnail rows use the tallest rendered tile in that row instead of always reserving the maximum
+  configured height. Wide previews therefore don't leave unused space below the last row.
 
 ## Test scenarios
 
@@ -30,3 +34,5 @@ Mirrors `AppearanceTests.swift` 1:1.
 - **testComfortableWidth** — for every model, the comfortable width fraction matches for both horizontal and vertical screen use.
 - **testComfortableWidthFallsBackToDefaultWhenPhysicalWidthIsNil** — when the screen's physical dimensions aren't reported, fall back to the 0.9 default rather than the 0.45 floor.
 - **testGoodValuesForThumbnailsWidthMinMaxPortrait** — for aspectRatio < 1 (portrait usage), the (min, max) uses the portrait formula and stays within the [0.09, 0.30] clamps.
+- **testThumbnailTileHeightUsesRenderedContent** — an ultrawide preview produces a compact tile matching its rendered header, image, spacing, and insets.
+- **testThumbnailTileHeightRespectsMaximum** — unusually tall content remains capped at the configured maximum tile height.

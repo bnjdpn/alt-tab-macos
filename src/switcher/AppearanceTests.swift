@@ -48,6 +48,16 @@ final class AppearanceTests: XCTestCase {
         XCTAssertEqual(hi2, min(0.30, 2.1 / 16), accuracy: 0.001)
     }
 
+    func testThumbnailTileHeightUsesRenderedContent() throws {
+        let actual = AppearanceTestable.thumbnailTileHeight(112, 28, 12, 5, 384)
+        XCTAssertEqual(actual, 169)
+    }
+
+    func testThumbnailTileHeightRespectsMaximum() throws {
+        let actual = AppearanceTestable.thumbnailTileHeight(400, 28, 12, 5, 384)
+        XCTAssertEqual(actual, 384)
+    }
+
     private let screens: [(String, (CGFloat, CGFloat), (CGFloat, CGFloat), (CGFloat, CGFloat), [(Int, CGFloat, CGFloat)])] = [
         // screen model, (widthInPixels, heightInPixels), (physicalWidthInMM, physicalHeightInMM), (expectedWidthForHorizontal, expectedWidthForVertical), (rowCount, expectedMinWidth, expectedMaxWidth)
         ("11\" Laptop: MacBook Air 11\": HD", (1366, 768), (255.7, 178.6), (0.90, 0.90), [(3, 0.12, 0.25), (4, 0.09, 0.19), (5, 0.09, 0.15)]),

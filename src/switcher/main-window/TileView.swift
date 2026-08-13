@@ -527,12 +527,18 @@ class TileView: FlippedView {
     }
 
     private func updateSizes(_ newHeight: CGFloat) {
-        setFrameWidthHeight(newHeight)
+        setFrameWidthHeight(preferredHeight(newHeight))
         if Preferences.effectiveAppearanceStyle(SwitcherSession.activeShortcutIndex) != .appIcons {
             let hWidth = frame.width - Appearance.edgeInsetsSize * 2
             let labelWidth = hWidth - appIcon.frame.width - Appearance.appIconLabelSpacing - statusIcons.totalWidth
             label.setWidth(labelWidth)
         }
+    }
+
+    private func preferredHeight(_ maximumHeight: CGFloat) -> CGFloat {
+        guard Preferences.effectiveAppearanceStyle(SwitcherSession.activeShortcutIndex) == .thumbnails else { return maximumHeight }
+        let headerHeight = max(appIcon.frame.height, TilesView.layoutCache.labelHeight)
+        return AppearanceTestable.thumbnailTileHeight(thumbnail.frame.height, headerHeight, Appearance.edgeInsetsSize, Appearance.intraCellPadding, maximumHeight)
     }
 
     private func updatePositions(_ newHeight: CGFloat) {

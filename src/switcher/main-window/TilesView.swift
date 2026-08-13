@@ -451,44 +451,49 @@ class TilesView {
 
     private static func dryRunLayoutTileViews(_ widthMax: CGFloat) -> CGFloat {
         let labelHeight = Self.layoutCache.labelHeight
-        let height = TileView.height(labelHeight)
+        let maximumHeight = TileView.height(labelHeight)
         let isLeftToRight = App.shared.userInterfaceLayoutDirection == .leftToRight
         let startingX = isLeftToRight ? Appearance.interCellPadding : widthMax - Appearance.interCellPadding
         var currentX = startingX
         var currentY = Appearance.interCellPadding
-        var maxY = currentY + height + Appearance.interCellPadding
+        var currentRowHeight = CGFloat(0)
+        var maxY = CGFloat(0)
         var index = 0
         while index < TilesView.recycledViews.count {
-            guard SwitcherSession.isActive else { return maxY }
+            guard SwitcherSession.isActive else { return maxY == 0 ? currentY + maximumHeight + Appearance.interCellPadding : maxY }
             defer { index += 1 }
             let view = TilesView.recycledViews[index]
             guard index < Windows.list.count else { break }
             let window = Windows.list[index]
             guard Windows.shouldDisplay(window) else { view.frame = .zero; continue }
-            view.updateRecycledCellWithNewContent(window, index, height)
+            view.updateRecycledCellWithNewContent(window, index, maximumHeight)
             let width = view.frame.size.width
+            let height = view.frame.size.height
             let projectedX = projectedWidth(currentX, width).rounded(.down)
             if needNewLine(projectedX, widthMax) {
                 currentX = startingX
-                currentY = (currentY + height + Appearance.interCellPadding).rounded(.down)
+                currentY = (currentY + currentRowHeight + Appearance.interCellPadding).rounded(.down)
+                currentRowHeight = height
                 currentX = projectedWidth(currentX, width).rounded(.down)
-                maxY = max(currentY + height + Appearance.interCellPadding, maxY)
             } else {
                 currentX = projectedX
+                currentRowHeight = max(currentRowHeight, height)
             }
+            maxY = max(currentY + currentRowHeight + Appearance.interCellPadding, maxY)
         }
-        return maxY
+        return maxY == 0 ? currentY + maximumHeight + Appearance.interCellPadding : maxY
     }
 
     private static func layoutTileViews(_ widthMax: CGFloat) -> (CGFloat, CGFloat, CGFloat, [Int])? {
         let labelHeight = Self.layoutCache.labelHeight
-        let height = TileView.height(labelHeight)
+        let maximumHeight = TileView.height(labelHeight)
         let isLeftToRight = App.shared.userInterfaceLayoutDirection == .leftToRight
         let startingX = isLeftToRight ? Appearance.interCellPadding : widthMax - Appearance.interCellPadding
         var currentX = startingX
         var currentY = Appearance.interCellPadding
+        var currentRowHeight = CGFloat(0)
         var maxX = CGFloat(0)
-        var maxY = currentY + height + Appearance.interCellPadding
+        var maxY = CGFloat(0)
         var newViews = [TileView]()
         var rowSignature = [Int]()
         rows.removeAll(keepingCapacity: true)
@@ -504,21 +509,25 @@ class TilesView {
                     view.frame = .zero
                     continue
                 }
-                view.updateRecycledCellWithNewContent(window, index, height)
+                view.updateRecycledCellWithNewContent(window, index, maximumHeight)
                 let width = view.frame.size.width
+                let height = view.frame.size.height
                 let projectedX = projectedWidth(currentX, width).rounded(.down)
                 if needNewLine(projectedX, widthMax) {
+                    equalizeRowHeight(rows[rows.count - 1], currentRowHeight)
                     currentX = startingX
-                    currentY = (currentY + height + Appearance.interCellPadding).rounded(.down)
+                    currentY = (currentY + currentRowHeight + Appearance.interCellPadding).rounded(.down)
+                    currentRowHeight = height
                     view.frame.origin = CGPoint(x: localizedCurrentX(currentX, width), y: currentY)
                     currentX = projectedWidth(currentX, width).rounded(.down)
-                    maxY = max(currentY + height + Appearance.interCellPadding, maxY)
                     rows.append([TileView]())
                 } else {
                     view.frame.origin = CGPoint(x: localizedCurrentX(currentX, width), y: currentY)
                     currentX = projectedX
+                    currentRowHeight = max(currentRowHeight, height)
                     maxX = max(isLeftToRight ? currentX : widthMax - currentX, maxX)
                 }
+                maxY = max(currentY + currentRowHeight + Appearance.interCellPadding, maxY)
                 rows[rows.count - 1].append(view)
                 newViews.append(view)
                 rowSignature.append(index)
@@ -530,6 +539,8 @@ class TilesView {
                 view.window_ = nil
             }
         }
+        equalizeRowHeight(rows[rows.count - 1], currentRowHeight)
+        if maxY == 0 { maxY = currentY + maximumHeight + Appearance.interCellPadding }
         scrollView.documentView!.subviews = newViews
         scrollView.documentView!.addSubview(thumbnailOverView)
         thumbnailOverView.scrollView = scrollView
@@ -538,6 +549,12 @@ class TilesView {
             docLayer.insertSublayer(thumbnailUnderLayer, at: 0)
         }
         return (maxX, maxY, labelHeight, rowSignature)
+    }
+
+    private static func equalizeRowHeight(_ row: [TileView], _ height: CGFloat) {
+        for view in row {
+            assignIfDifferent(&view.frame.size.height, height)
+        }
     }
 
     private static func needNewLine(_ projectedX: CGFloat, _ widthMax: CGFloat) -> Bool {
